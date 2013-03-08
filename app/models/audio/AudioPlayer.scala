@@ -69,7 +69,7 @@ object AudioPlayer {
       250, 0.4, synth.createTimeStamp
     )
     voice.noteOff(
-      synth.createTimeStamp.makeRelative(500)
+      synth.createTimeStamp.makeRelative(0.5)
     )
   }
 
