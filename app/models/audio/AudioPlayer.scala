@@ -3,6 +3,7 @@ package models.audio
 import scala.collection.JavaConversions._
 import scala.collection.concurrent.{Map => ConcurrentMap}
 
+import java.io.{ByteArrayOutputStream, PrintStream}
 import java.util.concurrent.ConcurrentHashMap
 
 import play.api.Logger
@@ -32,9 +33,22 @@ object AudioPlayer {
    *
    * This should be called before any other method.
    */
-  def init {
+  def init() {
     Logger.info("Starting JSyn Synthesizer")
+
+    // Get rid of this stupid fucking stdout logging JSyn does.
+    // It's ridiculous that I have to do this crap.
+    val stdout = System.out
+    val captureBuf = new ByteArrayOutputStream
+    val captureStream = new PrintStream(captureBuf)
+    System.setOut(captureStream)
+
     synth.start() // Bootstrap JSyn
+
+    System.setOut(stdout)
+    Logger.info(captureBuf.toString)
+    captureStream.close
+
     synth.add(lineOut)
     lineOut.start()
   }
@@ -76,7 +90,7 @@ object AudioPlayer {
   /**
    * Shutdown the System.
    */
-  def shutdown {
+  def shutdown() {
     lineOut.stop()
     synth.stop()
   }
