@@ -136,14 +136,12 @@ object AudioPlayer {
       return
     }
 
-    val amplitude = 1 / (if (playerCount > 0) playerCount else 1)
-    Logger.debug("(Theoretical) Amplitude value: %d".format(amplitude))
-
+    val amplitude = 1.toDouble / (if (playerCount > 0) playerCount else 1)
 
     // Play for 500 ms a tone of 250Hz at amplitude 0.4
     voice.noteOn(
       250,
-      0.7,
+      amplitude,
       synth.createTimeStamp
     )
     voice.noteOff(
