@@ -67,7 +67,7 @@ object AudioPlayer {
     connectToOutput(playerVoice)
     synth.add(playerVoice)
     players += (playerId -> playerVoice)
-    playerCount++
+    playerCount += 1
   }
 
   /**
@@ -84,7 +84,7 @@ object AudioPlayer {
 
     // Play for 500 ms a tone of 250Hz at amplitude 0.4
     voice.noteOn(
-      250, 0.4, synth.createTimeStamp
+      250, 0.7, synth.createTimeStamp
     )
     voice.noteOff(
       synth.createTimeStamp.makeRelative(0.5)

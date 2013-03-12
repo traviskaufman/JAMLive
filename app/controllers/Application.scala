@@ -11,7 +11,9 @@ object Application extends Controller {
    */
   def index = Action { implicit request =>
     // TODO: Async add player to system. (Right now just sync)
-    AudioPlayer.
+    val pId: String = AudioPlayer.playerCount.toString
+    AudioPlayer.addPlayer(pId)
+    AudioPlayer.play(pId)
     Ok(views.html.index())
   }
 
@@ -21,15 +23,15 @@ object Application extends Controller {
    *
    * @todo Implement in OSC.
    */
-  def init = WebSocket.using[String] { request =>
+  // def init = WebSocket.using[String] { request =>
 
-    val in = Iteratee.forEach[String] { msg =>
-      msg match {
-        case "playNote" =>
+  //   val in = Iteratee.forEach[String] { msg =>
+  //     msg match {
+  //       case "playNote" =>
 
-      }
-    }
+  //     }
+  //   }
 
-  }
+  // }
 
 }
