@@ -44,13 +44,12 @@ object AudioPlayer {
     System.setOut(captureStream)
 
     synth.start() // Bootstrap JSyn
+    synth.add(lineOut)
+    lineOut.start()
 
     System.setOut(stdout)
     Logger.info(captureBuf.toString)
     captureStream.close
-
-    synth.add(lineOut)
-    lineOut.start()
   }
 
   /**
