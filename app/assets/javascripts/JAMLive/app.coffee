@@ -3,6 +3,6 @@
 ###
 
 define [
-  'cs!test'
+  'test'
 ], (Test) ->
   Test.go()
