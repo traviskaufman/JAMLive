@@ -1,5 +1,8 @@
 package controllers
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits._
+
 import play.api._
 import play.api.mvc._
 import models.audio.AudioPlayer
@@ -9,12 +12,37 @@ object Application extends Controller {
   /**
    * Serve the Application.
    */
-  def index = Action { implicit request =>
-    // TODO: Async add player to system. (Right now just sync)
-    val pId: String = AudioPlayer.playerCount.toString
-    AudioPlayer.addPlayer(pId)
-    AudioPlayer.play(pId)
+  def index = Action {
     Ok(views.html.index())
+  }
+
+  /**
+   * Endpoint to ping when a user leaves the page. Will eventually be replaced
+   * with a message for when the socket disconnects (possibly).
+   */
+  def connect = Action { request =>
+    val playerId = request.getQueryString("playerId")
+
+    if (playerId != None) {
+      BadRequest("playerId required")
+    } else {
+
+      // Make this async so if there's ops on the player's map the request
+      // won't block
+      val addPlayerFuture: Future[String] = Future[String] {
+        AudioPlayer.addPlayer(playerId.get)
+      }
+
+      Async {
+        addPlayerFuture.map {res =>
+          res match {
+            case null => BadRequest("ERR_ID_EXISTS")
+            case _ => Ok(res)
+          }
+        }
+      }
+
+    }
   }
 
   /**
