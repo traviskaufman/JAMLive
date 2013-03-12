@@ -20,10 +20,14 @@ import com.jsyn.unitgen.UnitVoice
  * @param synth The synthesizer object used to play the audio.
  * @param lineOut The stereo output that the whole system connects to.
  * @param players A map of each player and his/her voice.
+ * @param playerCount The number of current connected players.
+ *
+ * @todo removePlayer
  */
 object AudioPlayer {
   implicit val synth: Synthesizer = JSyn.createSynthesizer
   implicit val lineOut: LineOut = new LineOut
+  var playerCount: Int = 0
 
   private val players: ConcurrentMap[String,
                           UnitVoice] = new ConcurrentHashMap[String, UnitVoice]
@@ -63,6 +67,7 @@ object AudioPlayer {
     connectToOutput(playerVoice)
     synth.add(playerVoice)
     players += (playerId -> playerVoice)
+    playerCount++
   }
 
   /**
