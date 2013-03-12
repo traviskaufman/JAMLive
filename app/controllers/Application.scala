@@ -23,7 +23,7 @@ object Application extends Controller {
   def connect = Action { request =>
     val playerId = request.getQueryString("playerId")
 
-    if (playerId != None) {
+    if (playerId == None) {
       BadRequest("playerId required")
     } else {
 
@@ -37,7 +37,10 @@ object Application extends Controller {
         addPlayerFuture.map {res =>
           res match {
             case null => BadRequest("ERR_ID_EXISTS")
-            case _ => Ok(res)
+            case _ => {
+              AudioPlayer.play(res)
+              Ok(res)
+            }
           }
         }
       }
