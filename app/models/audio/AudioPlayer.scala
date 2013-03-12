@@ -80,6 +80,7 @@ object AudioPlayer {
     players += (playerId -> playerVoice)
     playerCount += 1
 
+    Logger.info("Player %s connected!".format(playerId))
     playerId
   }
 
@@ -161,7 +162,7 @@ object AudioPlayer {
       }
     }
 
-    Logger.debug("removed %d current players".format(removed.length))
+    Logger.info("removed %d current players".format(removed.length))
     lineOut.stop()
     synth.stop()
   }
