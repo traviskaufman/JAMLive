@@ -16,6 +16,7 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     requireJs += "main.js",
+    requireJsShim += "main.js",
     requireJsFolder := "javascripts/JAMLive"
   )
 
