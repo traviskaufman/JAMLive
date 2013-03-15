@@ -3,6 +3,13 @@
 ###
 
 define [
-  'test'
-], (Test) ->
-  Test.go()
+  'jquery',
+  'views/create_user'
+], ($, CreateUserView) ->
+  init = ->
+    appContainer = $ '#app'
+    appContainer.append (new CreateUserView()).render().$el
+    return
+
+  $ init
+  return
