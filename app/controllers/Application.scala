@@ -7,8 +7,12 @@ import play.api._
 import play.api.mvc._
 import models.audio.AudioPlayer
 
+/**
+ * Main Controller for JAMLive!
+ *
+ * @param playerForm Very simple; what the user initially uses to sign up.
+ */
 object Application extends Controller {
-
   /**
    * Serve the Application.
    */
@@ -17,34 +21,28 @@ object Application extends Controller {
   }
 
   /**
-   * Endpoint to ping when a user leaves the page. Will eventually be replaced
-   * with a message for when the socket disconnects (possibly).
+   * Endpoint to ping when a user connects to the page and enters an id for
+   * himself/herself.
+   *
+   * @param pId The playerId for the user.
    */
-  def connect = Action { request =>
-    val playerId = request.getQueryString("playerId")
+  def connect(pId: String) = Action {
+    // Make this async so if there's ops on the players map the request
+    // won't block
+    val addPlayerFuture: Future[String] = Future[String] {
+      AudioPlayer.addPlayer(pId)
+    }
 
-    if (playerId == None) {
-      BadRequest("playerId required")
-    } else {
-
-      // Make this async so if there's ops on the player's map the request
-      // won't block
-      val addPlayerFuture: Future[String] = Future[String] {
-        AudioPlayer.addPlayer(playerId.get)
-      }
-
-      Async {
-        addPlayerFuture.map {res =>
-          res match {
-            case null => BadRequest("ERR_ID_EXISTS")
-            case _ => {
-              AudioPlayer.play(res)
-              Ok(res)
-            }
+    Async {
+      addPlayerFuture.map {res =>
+        res match {
+          case null => BadRequest("ERR_ID_EXISTS")
+          case _ => {
+            AudioPlayer.play(res)
+            Ok(res)
           }
         }
       }
-
     }
   }
 
