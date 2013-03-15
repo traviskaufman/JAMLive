@@ -11,5 +11,6 @@ define ['jquery'], ($) ->
 
       $(document.body).append el
       el.fadeIn()
+      return
 
   Test
