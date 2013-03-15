@@ -4,26 +4,19 @@ define [Backbone], (Backbone) ->
   # logged in and jamming.
   ###
   Player = Backbone.Model.extend
+    ###
+    # This is used for the sole purpose of connecting a
+    # player to the JAMLive server so s/he can start transmitting
+    # messages.
+    ###
+    url: "/connect"
 
     ###
-    # Initialize the player with a given id.
-    #
-    # @param id {String} The ID of the player.
+    # Connect the player to the JAMLive server when s/he joins.
     #
     # @constructor
     ###
-    intialize: (id) ->
-      @set('id', id)
-      @connect
+    intialize:
+      @save()
 
-    ###
-    # Default values for player attributes.
-    ###
-    defaults:
-      id: null
-
-    ###
-    # Connects the user to the server, initializing his/her session.
-    ###
-    connect: ->
-      endPoint = "/connect"
+  Player
