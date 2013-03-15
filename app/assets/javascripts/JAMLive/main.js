@@ -1,6 +1,20 @@
 require.config({
   paths: {
-    'jquery': 'lib/jquery-1.9.0.min'
+    zepto: 'lib/zepto.min',
+    lodash: 'lib/lodash.min',
+    backbone: 'lib/backbone-min'
+  },
+  shim: {
+    zepto: {
+      exports: '$'
+    },
+    lodash: {
+      exports: '_'
+    },
+    backbone: {
+      deps: ['zepto', 'lodash'],
+      exports: 'Backbone'
+    }
   }
 });
 
