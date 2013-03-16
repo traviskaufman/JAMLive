@@ -12,10 +12,10 @@ define ['backbone'], (Backbone) ->
     url: "/connect"
 
     ###
-    # Give the user an initially empty id string.
+    # Give the user an initially empty nickname string.
     ###
     defaults:
-      id: ""
+      nickname: ""
 
 
     ###
@@ -24,9 +24,9 @@ define ['backbone'], (Backbone) ->
     # taken).
     ###
     validate: ->
-      return "Must be less than 80 characters" unless id.length < 80
-      return "Must only contain letters, numbers, and '_'" unless id.match(
-        /^\w+$/g
-      )
+      return "Must be less than 80 characters" unless nickname.length < 80
+      return "Must only contain letters, numbers, and '_'" unless \
+        nickname.match /^\w+$/g
+
 
   User
