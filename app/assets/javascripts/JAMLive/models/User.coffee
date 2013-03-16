@@ -1,4 +1,4 @@
-define [Backbone], (Backbone) ->
+define ['backbone'], (Backbone) ->
   ###
   # Holds information about the current player who's
   # logged in and jamming.
@@ -16,7 +16,7 @@ define [Backbone], (Backbone) ->
     #
     # @constructor
     ###
-    intialize:
+    intialize: ->
       @save()
 
   Player
