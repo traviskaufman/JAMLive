@@ -5,6 +5,8 @@ import scala.concurrent.ExecutionContext.Implicits._
 
 import play.api._
 import play.api.mvc._
+import play.api.libs.json.Json
+
 import models.audio.AudioPlayer
 
 /**
@@ -34,15 +36,23 @@ object Application extends Controller {
     }
 
     Async {
+
       addPlayerFuture.map {res =>
         res match {
-          case null => BadRequest("ERR_ID_EXISTS")
+          case null => BadRequest(Json.obj(
+            "status" -> http.Status.BAD_REQUEST,
+            "error" -> """ID $res is already taken."""
+          ))
           case _ => {
             AudioPlayer.play(res)
-            Ok(res)
+            Ok(Json.obj(
+              "status" -> http.Status.OK,
+              "playerId" -> res
+            ))
           }
         }
       }
+
     }
   }
 
