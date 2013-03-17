@@ -24,6 +24,7 @@ define ['backbone'], (Backbone) ->
     # taken).
     ###
     validate: ->
+      return "Must supply a nickname" unless playerId.length isnt 0
       return "Must be less than 80 characters" unless playerId.length < 80
       return "Must only contain letters, numbers, and '_'" unless \
         playerId.match /^\w+$/g
