@@ -3,7 +3,7 @@ define [
   'backbone',
   'models/user',
   'views/user',
-  'text!templates/createuser_dialog.html.ejs'
+  'text!templates/create_user_dialog.html.ejs'
 ], (_, Backbone, User, UserView, CreateUserDialogTpl) ->
 
   ###
@@ -46,15 +46,15 @@ define [
     ###
     # Attempts to save a user to the backend. If there are any errors, they
     # will be displayed. Note that in order to see if the user connected
-    # successfully a client can listen for the user's "sync" mechanism.
+    # successfully a client can listen for the user's "sync" event.
     ###
     connectUser: ->
       @user.save
         error: (model, xhr, options) ->
           if xhr.status is 400 and
-             typeof xhr.response.error === "string"
+             typeof xhr.response.error is "string"
 
-            @$('.message').text(xhr.response.error)
+            @$('.message').text xhr.response.error
 
     ###
     # The user that the view is attempting to save and send to an actual user
