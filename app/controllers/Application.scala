@@ -4,6 +4,8 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
 
 import play.api._
+import play.api.data._
+import play.api.data.Forms._
 import play.api.mvc._
 import play.api.libs.json.Json
 
@@ -15,6 +17,10 @@ import models.audio.AudioPlayer
  * @param playerForm Very simple; what the user initially uses to sign up.
  */
 object Application extends Controller {
+  val playerForm = Form(
+    "playerId" -> text
+  )
+
   /**
    * Serve the Application.
    */
@@ -28,7 +34,9 @@ object Application extends Controller {
    *
    * @param pId The playerId for the user.
    */
-  def connect(pId: String) = Action {
+  def connect = Action { implicit request =>
+    val pId = playerForm.bindFromRequest.get
+
     // Make this async so if there's ops on the players map the request
     // won't block
     val addPlayerFuture: Future[String] = Future[String] {
