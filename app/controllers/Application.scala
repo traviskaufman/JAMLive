@@ -49,7 +49,7 @@ object Application extends Controller {
         res match {
           case null => BadRequest(Json.obj(
             "status" -> http.Status.BAD_REQUEST,
-            "error" -> """ID $res is already taken."""
+            "error" -> "ID %s is already taken.".format(pId)
           ))
           case _ => {
             AudioPlayer.play(res)
