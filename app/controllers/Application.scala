@@ -31,8 +31,6 @@ object Application extends Controller {
   /**
    * Endpoint to ping when a user connects to the page and enters an id for
    * himself/herself.
-   *
-   * @param pId The playerId for the user.
    */
   def connect = Action { implicit request =>
     val pId = playerForm.bindFromRequest.get
