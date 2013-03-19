@@ -20,8 +20,8 @@ define ['backbone'], (Backbone) ->
 
     ###
     # Makes sure a user's name isn't emtpy and less than 80 characters.
-    # We also check to make sure the user's name is available (not already
-    # taken).
+    # We also check to make sure the user's contains only letters, numbers, and
+    # '_' symbols.
     ###
     validate: (attrs, opts) ->
       pId = attrs.playerId
