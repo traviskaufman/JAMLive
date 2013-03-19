@@ -15,6 +15,12 @@ define [
     className: 'user-creation-dialog'
 
     ###
+    # The user that the view is attempting to save and send to an actual user
+    # view.
+    ###
+    user: null
+
+    ###
     # Contains the markup for the user creation dialog.
     ###
     template: _.template CreateUserDialogTpl
@@ -22,13 +28,15 @@ define [
     ###
     # On Initialization, this view needs to handle the user model that will,
     # on successful validation, will be connected to the JAMLive! server and
-    # passed to an actual user view.
+    # passed to an actual user view. Also binds events to this user to check
+    # for valid / invalid model.
     #
     # @param userToCreate {Object<User>} The user model this view will be
     # creating a view for.
     ###
     initialize: (userToCreate) ->
       @user = userToCreate
+      return
 
     ###
     # Classic Backbone-style render.
@@ -41,6 +49,7 @@ define [
     # Events bound to this view.
     ###
     events:
+      'keyup .pId-input': '_attemptSetPlayerId'
       'click .connect-user': 'connectUser'
 
     ###
@@ -54,12 +63,47 @@ define [
           if xhr.status is 400 and
              typeof xhr.response.error is "string"
 
-            @$('.message').text xhr.response.error
+            @_displayMessage xhr.response.error, 'error'
 
     ###
-    # The user that the view is attempting to save and send to an actual user
-    # view.
+    # Runs validate() on the user model and displays any errors if the user
+    # does not pass validation. Otherwise it will display a success message.
+    #
+    # @param {Object<jQuery.Event>} evt The event object passed on when this
+    # method is triggered as the result of an event being called.
+    #
+    # @private
     ###
-    user: null
+    _attemptSetPlayerId: ( =>
+      # Make sure evt callback is bound to correct receiver.
+      _.debounce (evt) ->
+        error = @user.validate
+                  playerId: evt.target.value
+
+        if typeof error isnt "undefined"
+          @_displayMessage "#{error}", 'error'
+        else
+          @user.set 'playerId', evt.target.value
+          @_displayMessage "#{@user.get 'playerId'} available!", "success"
+
+        return
+      , 175
+    )()
+
+    ###
+    # Displays a message with a message type.
+    #
+    # @private
+    ###
+    _displayMessage: (msgBody, level) ->
+      $msgEl = @$('.message')
+      $msgEl
+        .removeClass('hidden')
+        .removeClass('alert-success')
+        .removeClass('alert-warning')
+        .removeClass('alert-error')
+
+      $msgEl.text(msgBody)
+      $msgEl.addClass("alert-#{level}")
 
   CreateUserView
