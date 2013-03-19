@@ -10,7 +10,7 @@ define [
   init = ->
     user = new User()
     user.on "sync", ->
-      console.log "User Connected: #{@user.get 'playerId'}"
+      console.log "User Connected: #{user.get 'playerId'}"
 
     appContainer = $ '#app'
     appContainer.append (new CreateUserView(user)).render().$el
