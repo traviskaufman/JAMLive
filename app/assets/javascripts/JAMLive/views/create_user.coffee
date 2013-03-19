@@ -28,8 +28,8 @@ define [
     ###
     # On Initialization, this view needs to handle the user model that will,
     # on successful validation, will be connected to the JAMLive! server and
-    # passed to an actual user view. Also binds events to this user to check
-    # for valid / invalid model.
+    # passed to an actual user view. Also binds events to the input to disable
+    # or enable when entered nickname is invalid or valid, respectively.
     #
     # @param userToCreate {Object<User>} The user model this view will be
     # creating a view for.
@@ -57,13 +57,18 @@ define [
     # will be displayed. Note that in order to see if the user connected
     # successfully a client can listen for the user's "sync" event.
     ###
-    connectUser: ->
-      @user.save
-        error: (model, xhr, options) ->
-          if xhr.status is 400 and
-             typeof xhr.response.error is "string"
+    connectUser: (evt) ->
+      evt.preventDefault()
 
-            @_displayMessage xhr.response.error, 'error'
+      if @$(evt.target).hasClass('disabled') isnt true
+        _this = @
+        @user.save null,
+          error: (model, xhr, options) ->
+            if xhr.status is 400 and
+               typeof xhr.responseText is "string"
+
+              _this._displayMessage JSON.parse(xhr.responseText).error, 'error'
+      return
 
     ###
     # Runs validate() on the user model and displays any errors if the user
@@ -84,7 +89,7 @@ define [
           @_displayMessage "#{error}", 'error'
         else
           @user.set 'playerId', evt.target.value
-          @_displayMessage "#{@user.get 'playerId'} available!", "success"
+          @_displayMessage "#{@user.get 'playerId'} is valid!", "success"
 
         return
       , 175
@@ -95,15 +100,24 @@ define [
     #
     # @private
     ###
-    _displayMessage: (msgBody, level) ->
-      $msgEl = @$('.message')
-      $msgEl
-        .removeClass('hidden')
-        .removeClass('alert-success')
-        .removeClass('alert-warning')
-        .removeClass('alert-error')
+    _displayMessage: (msgBody, msgType) ->
+      $msgContainer = @$ '.control-group.input-container'
+      $msgTxt = @$ '.input-container .message'
+      $connectBtn = @$ '.connect-user'
 
-      $msgEl.text(msgBody)
-      $msgEl.addClass("alert-#{level}")
+      $msgContainer
+        .removeClass('success')
+        .removeClass('warning')
+        .removeClass('error')
+
+      $msgTxt.removeClass('invisible').text msgBody
+      $msgContainer.addClass "#{msgType}"
+
+      if msgType is 'success'
+        $connectBtn.removeClass 'disabled'
+      else
+        $connectBtn.addClass 'disabled'
+
+      return
 
   CreateUserView
