@@ -5,14 +5,37 @@ package test
 
 import org.specs2.mutable._
 
+import play.api.mvc.{Result, AsyncResult}
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.libs.json.Json.parse
 
 /**
+ * Holds some fixtures and convenience methods for testing the application.
+ *
+ * @param playerId The player ID used for testing.
+ */
+object ApplicationSpec {
+  val playerId: String = "Bob"
+
+  /**
+   * Creates a request that would hypothetically be sent by a client back to the server when a user
+   * wanted to connect, and returns the reponse from that request.
+   *
+   * @return a Result instance representing that request.
+   */
+  def getConnectResponse: Result = await[Result](
+    route(FakeRequest(POST, "/connect").withFormUrlEncodedBody(
+      ("playerId" -> playerId)
+    )).get.asInstanceOf[AsyncResult].result
+  )
+}
+
+/**
  * Spec for the application controller. Should be pretty straightforward.
  */
 class ApplicationSpec extends Specification {
+  import ApplicationSpec._
 
   "Application" should {
 
@@ -33,19 +56,26 @@ class ApplicationSpec extends Specification {
     }
 
     "connect a user to the audio server if s/he has a unique ID" in {
-      val playerId = "Bob"
-
       running(FakeApplication()) {
-        val connectRequest = route(FakeRequest("POST", "/connect").withFormUrlEncodedBody(
-          ("playerId" -> playerId)
-        )).get
+        val connectResp = getConnectResponse
 
-        status(connectRequest) must equalTo(OK)
-        contentType(connectRequest) must beSome.which(_ == "application/json")
+        status(connectResp) must equalTo(OK)
+        contentType(connectResp) must beSome.which(_ == "application/json")
 
-        val resp = parse(contentAsString(connectRequest))
-        (resp \ "status").as[Int] must equalTo(OK)
-        (resp \ "playerId").as[String] must equalTo(playerId)
+        val json = parse(contentAsString(connectResp))
+        (json \ "status").as[Int] must equalTo(OK)
+        (json \ "playerId").as[String] must equalTo(playerId)
+      }
+    }
+
+    "send back an error if a player tries to connect with a taken id" in {
+      running(FakeApplication()) {
+        val _ = getConnectResponse
+        val attempt2 = getConnectResponse
+        val json = parse(contentAsString(attempt2))
+
+        (json \ "status").as[Int] must equalTo(BAD_REQUEST)
+        (json \ "error").as[String] must equalTo(s"""ID $playerId is already taken.""")
       }
     }
   }
