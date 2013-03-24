@@ -127,7 +127,7 @@ object AudioPlayer {
    *
    * @param playerId The ID of the player whos voice should be played.
    */
-  def play(playerId: String) {
+  def play(playerId: String, freq: Int=250) {
     val voice = getPlayerVoice(playerId)
 
     if (voice == null) {
@@ -140,7 +140,7 @@ object AudioPlayer {
 
     // Play for 500 ms a tone of 250Hz at amplitude 0.4
     voice.noteOn(
-      250,
+      freq,
       amplitude,
       synth.createTimeStamp
     )

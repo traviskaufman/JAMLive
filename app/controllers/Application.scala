@@ -68,15 +68,25 @@ object Application extends Controller {
    *
    * @todo Implement in OSC.
    */
-  // def init = WebSocket.using[String] { request =>
+  def jamSession = WebSocket.using[String] {
 
-  //   val in = Iteratee.forEach[String] { msg =>
-  //     msg match {
-  //       case "playNote" =>
+    val in = Iteratee.forEach[String] { msg =>
+      msg match {
+        case str if str.startsWith("playNote:") =>
+          val (pId, freq) = {
+            val sp = str.split(":")
+            (sp(1), sp(2))
+          }
 
-  //     }
-  //   }
+          AudioPlayer.play(pId, freq)
+      }
+    } mapDone { _ =>
+      log.info("Player Disconnected!")
+    }
 
-  // }
+    val out = Enumerator[Unit]
+
+    (in, out)
+  }
 
 }
