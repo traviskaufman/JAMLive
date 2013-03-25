@@ -5,17 +5,24 @@
 define [
   'jquery',
   'models/user',
-  'views/create_user'
-], ($, User, CreateUserView) ->
+  'views/create_user',
+  'views/user'
+], ($, User, CreateUserView, UserView) ->
   init = ->
     user = new User()
+    $appEl = $ '#app'
+
     user.on "sync", ->
-      window.testUser = user
-      console.log "Now you can access window.testUser!!"
+      user.startJamSession()
+      userView = new UserView
+        model: user
+
+      userView.render().$el.hide()
+      $appEl.html userView.$el
+      userView.$el.fadeIn()
       return
 
-    appContainer = $ '#app'
-    appContainer.append (new CreateUserView(user)).render().$el
+    $appEl.append (new CreateUserView(user)).render().$el
 
     return
 
