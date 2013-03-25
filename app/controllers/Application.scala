@@ -55,7 +55,7 @@ object Application extends Controller {
             Ok(Json.obj(
               "status" -> http.Status.OK,
               "playerId" -> res
-            ))
+            )).withSession(request.session + ("playerId" -> res))
           }
         }
       }
@@ -69,7 +69,7 @@ object Application extends Controller {
    *
    * @todo Implement with WAMP.
    */
-  def jamSession = WebSocket.using[String] { _ =>
+  def jamSession = WebSocket.using[String] { request =>
     val in = Iteratee.foreach[String] { msg =>
       msg match {
         case str if str.startsWith("playNote:") =>
@@ -81,6 +81,7 @@ object Application extends Controller {
           AudioPlayer.play(pId, freq)
       }
     } mapDone { _ =>
+      AudioPlayer.removePlayer(request.session("playerId"))
       Logger.info("Player Disconnected!")
     }
 

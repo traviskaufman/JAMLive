@@ -21,8 +21,6 @@ import com.jsyn.unitgen.UnitVoice
  * @param lineOut The stereo output that the whole system connects to.
  * @param players A map of each player and his/her voice.
  * @param playerCount The number of current connected players.
- *
- * @todo removePlayer
  */
 object AudioPlayer {
   implicit val synth: Synthesizer = JSyn.createSynthesizer
