@@ -62,7 +62,7 @@ define ['backbone'], (Backbone) ->
       if @get('connected') is true
         @_connection.send msg
       else
-        console.log "Warning: failed to send message #{msg} due to no " +
+        console.warn "Warning: failed to send message #{msg} due to no " +
                     "server connection"
       return
 
