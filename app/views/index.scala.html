@@ -1,5 +1,8 @@
+@(implicit request: RequestHeader)
+
 @main("Welcome to JAMLive!") {
-  <div class="app-container container">
+  <div class="app-container container"
+       data-ws-uri="@routes.Application.jamSession.webSocketURL()">
     <div id="app">
     </div>
   </div>

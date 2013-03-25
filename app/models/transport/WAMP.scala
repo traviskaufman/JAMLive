@@ -32,6 +32,7 @@ object WAMP {
    * Parses a WAMP Message and gives back information about that message.
    * @param msg JSON String received as a WAMP message by the server.
    * @todo better dox.
+   * @todo replace messages by case classes.
    * @return Map containing information about this message.
    */
   def parseMessage(msg: String): Map[String, String] = {
@@ -39,13 +40,13 @@ object WAMP {
     val json = Json.parse(msg)
     val msgType = WAMPMessage(json(0).as[Int])
 
-    mb += ("typeId" -> msgType)
+    mb += ("typeId" -> msgType.toString)
 
     msgType match {
       case WELCOME => // Don't know why this would ever be incoming but whatevs
         mb += (
           "sessionId" -> json(1).as[String],
-          "protocolVersion" -> json(2).as[Int],
+          "protocolVersion" -> json(2).as[Int].toString,
           "serverIdent" -> json(3).as[String]
         )
 

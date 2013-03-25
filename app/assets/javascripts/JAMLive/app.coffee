@@ -10,7 +10,9 @@ define [
   init = ->
     user = new User()
     user.on "sync", ->
-      console.log "User Connected: #{user.get 'playerId'}"
+      window.testUser = user
+      console.log "Now you can access window.testUser!!"
+      return
 
     appContainer = $ '#app'
     appContainer.append (new CreateUserView(user)).render().$el

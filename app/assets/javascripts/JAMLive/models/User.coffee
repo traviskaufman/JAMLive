@@ -37,13 +37,7 @@ define ['backbone'], (Backbone) ->
     # to the server.
     ###
     startJamSession: ->
-      wsUri = ( ->
-        protocol = window.location.protocol.replace "http", "ws"
-        host = window.location.host
-        path = window.location.path
-
-        "#{protocol}//#{host}#{path}"
-      )()
+      wsUri = document.querySelector('.app-container').dataset.wsUri
       @_connection = new WebSocket(wsUri)
 
       @_connection.onopen = @_onopen
@@ -65,9 +59,11 @@ define ['backbone'], (Backbone) ->
     # @private
     ###
     _wsMsg: (msg) ->
-      if @get 'connected' is true
+      if @get('connected') is true
         @_connection.send msg
-
+      else
+        console.log "Warning: failed to send message #{msg} due to no " +
+                    "server connection"
       return
 
     ###

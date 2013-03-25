@@ -7,6 +7,7 @@ import play.api._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc._
+import play.api.libs.iteratee.{Iteratee, Enumerator}
 import play.api.libs.json.Json
 
 import models.audio.AudioPlayer
@@ -24,8 +25,8 @@ object Application extends Controller {
   /**
    * Serve the Application.
    */
-  def index = Action {
-    Ok(views.html.index())
+  def index = Action { request =>
+    Ok(views.html.index(request))
   }
 
   /**
@@ -66,25 +67,24 @@ object Application extends Controller {
    * Establishes the websocket connection for sending
    * musical control messages to the server.
    *
-   * @todo Implement in OSC.
+   * @todo Implement with WAMP.
    */
-  def jamSession = WebSocket.using[String] {
-
-    val in = Iteratee.forEach[String] { msg =>
+  def jamSession = WebSocket.using[String] { _ =>
+    val in = Iteratee.foreach[String] { msg =>
       msg match {
         case str if str.startsWith("playNote:") =>
           val (pId, freq) = {
             val sp = str.split(":")
-            (sp(1), sp(2))
+            (sp(1), sp(2).toInt)
           }
 
           AudioPlayer.play(pId, freq)
       }
     } mapDone { _ =>
-      log.info("Player Disconnected!")
+      Logger.info("Player Disconnected!")
     }
 
-    val out = Enumerator[Unit]
+    val out = Enumerator[String]("")  // TODO: Fix this (WAMP Welcome Msg).
 
     (in, out)
   }

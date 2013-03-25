@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /jamSession                 controllers.Application.jamSession
 
 # Initial Connection. Ignore the id if backbone posts one.
 POST    /connect                    controllers.Application.connect
