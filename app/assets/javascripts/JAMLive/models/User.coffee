@@ -1,4 +1,7 @@
-define ['backbone'], (Backbone) ->
+define [
+  'backbone',
+  'models/instrument'
+], (Backbone, Instrument) ->
   ###
   # Holds information about the current user who's
   # logged in and jamming.
@@ -18,6 +21,13 @@ define ['backbone'], (Backbone) ->
     defaults:
       playerId: ""
       connected: false
+      instrument: new Instrument()
+
+    ###
+    # @constructor
+    ###
+    initialize: ->
+      @listenTo @get('instrument'), "sync", @_onInstrumentSync
 
     ###
     # Makes sure a user's name isn't emtpy and less than 80 characters.
@@ -76,6 +86,11 @@ define ['backbone'], (Backbone) ->
     # Event handler for when socket connection is initially opened.
     ###
     _onopen: =>
+      instrument = @get('instrument')
+
+      instrument.urlRoot = "/instrument/#{@get 'playerId'}"
+      instrument.fetch()
+
       @set 'connected', true
       console.log "Connected to server!"
       return
@@ -95,5 +110,14 @@ define ['backbone'], (Backbone) ->
     _onmessage: (m) =>
       console.log "WebSocket message: #{m.data}"
       return
+
+    ###
+    # Event handler for when the player's instrument is first retrieved from
+    # the server.
+    #
+    # @param model The instrument that was just synced with the server.
+    ###
+    _onInstrumentSync: (model) =>
+      console.log model.toJSON()
 
   User

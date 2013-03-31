@@ -11,6 +11,7 @@ import play.api.libs.iteratee.{Iteratee, Enumerator}
 import play.api.libs.json.Json
 
 import models.audio.AudioPlayer
+import models.audio.JsynExtensions._
 
 /**
  * Main Controller for JAMLive!
@@ -64,6 +65,24 @@ object Application extends Controller {
   }
 
   /**
+   * Retrieve information about a certain player's instrument.
+   *
+   * @param pId The id of the player you're getting the instrument for.
+   */
+  def instrument(pId: String) = Action {
+    val instrument = AudioPlayer.getPlayerVoice(pId)
+
+    if (instrument == null) {
+      BadRequest(Json.obj(
+        "status" -> http.Status.BAD_REQUEST,
+        "error" -> "No player associated with that playerId"
+      ))
+    } else {
+      Ok(Json.toJson(instrument.getUnitGenerator.inputPortsToMaps))
+    }
+  }
+
+  /**
    * Establishes the websocket connection for sending
    * musical control messages to the server.
    *
@@ -85,7 +104,7 @@ object Application extends Controller {
       Logger.info("Player Disconnected!")
     }
 
-    val out = Enumerator[String]("")  // TODO: Fix this (WAMP Welcome Msg).
+    val out = Enumerator[String]("")  // TODO: Fix this (WAMP Welcome Msg, etc.).
 
     (in, out)
   }
