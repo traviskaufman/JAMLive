@@ -78,7 +78,9 @@ object Application extends Controller {
         "error" -> "No player associated with that playerId"
       ))
     } else {
-      Ok(Json.toJson(instrument.getUnitGenerator.inputPortsToMaps))
+      Ok(Json.toJson(
+        instrument.getUnitGenerator.inputPortsToMap
+      ))
     }
   }
 
