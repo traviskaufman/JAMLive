@@ -1,7 +1,8 @@
 define [
   'backbone',
+  'lodash',
   'models/instrument'
-], (Backbone, Instrument) ->
+], (Backbone, _, Instrument) ->
   ###
   # Holds information about the current user who's
   # logged in and jamming.
@@ -119,5 +120,16 @@ define [
     ###
     _onInstrumentSync: (model) =>
       console.log model.toJSON()
+      @listenTo @get('instrument'), 'change', @_onInstrumentChange
+      return
+
+    ###
+    # Called after instrument is synced so it will stay updated on the server
+    # with the client.
+    ###
+    _onInstrumentChange: (model) =>
+      _.forEach model.changedAttributes(), (val, attr) ->
+        console.log "Change to #{attr} of #{val}"
+        return
 
   User

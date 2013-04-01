@@ -11,3 +11,14 @@
   <div class="sound-key" data-frequency="1320">E5</div>
   <div class="sound-key" data-frequency="1760">A6</div>
 </div>
+<div class="instrument-container container">
+  <% _.forEach(instrument.attributes, function(param, name) { %>
+    <div class="instrument container">
+      <p class="param-name"><%= name %></p>
+      <input type="text"
+             name="<%- name %>"
+             placeholder="<%- param.default %>"
+      />
+    </div>
+  <% }); %>
+</div>

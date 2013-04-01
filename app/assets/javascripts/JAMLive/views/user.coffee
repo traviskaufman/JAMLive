@@ -18,6 +18,13 @@ define [
     events:
       "mousedown .sound-key": "_onSoundKeyMouseDown"
       "touchstart .sound-key": "_onSoundKeyMouseDown"  # same deal as mousedown
+      "blur .p-input": "_onParamBlur"
+
+    ###
+    # @constructor
+    ###
+    initialize: ->
+      @model.get('instrument').on 'sync', @render
 
     render: =>
       markup = @template @model.toJSON()
@@ -33,6 +40,21 @@ define [
       freq = $target.data('frequency')
 
       @model.playNote freq
+
+    ###
+    # Update the param when the user is done setting the value.
+    # @param {Object<jQuery.Event>} evt Event object passed to handler.
+    ###
+    _onParamBlur: (evt) =>
+      $target = $ evt.currentTarget
+      name = $target.attr 'name'
+      value = $target.attr 'placeholder'
+
+      if $target.value.length > 0
+        value = $target.value
+
+      @model.get('instrument').set name, value
+
 
 
   UserView
