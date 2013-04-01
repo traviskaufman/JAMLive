@@ -28,18 +28,18 @@ package object JsynExtensions {
      *
      * @return An Iterable containing maps with information for each input port.
      */
-    def inputPortsToMap: Map[String, Map[String, String]] = ug.getPorts.filter (
+    def inputPortsToMap: Map[String, Map[String, Double]] = ug.getPorts.filter (
       _.isInstanceOf[UnitInputPort]
 
     ).map (
       _.asInstanceOf[UnitInputPort]
 
-    ).foldLeft(Map.empty[String, Map[String, String]]) (
-      (mem: Map[String, Map[String, String]], p: UnitInputPort) => mem + (
-        p.getName -> Map[String, String](
-          "default" -> p.getDefault.toString,
-          "max" -> p.getMaximum.toString,
-          "min" -> p.getMinimum.toString
+    ).foldLeft(Map.empty[String, Map[String, Double]]) (
+      (mem: Map[String, Map[String, Double]], p: UnitInputPort) => mem + (
+        p.getName -> Map[String, Double](
+          "default" -> p.getDefault,
+          "max" -> p.getMaximum,
+          "min" -> p.getMinimum
       ))
     )
   }
