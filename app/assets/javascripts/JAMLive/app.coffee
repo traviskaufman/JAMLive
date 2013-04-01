@@ -19,7 +19,7 @@ define [
 
       userView.render().$el.hide()
       $appEl.html userView.$el
-      userView.$el.fadeIn()
+      userView.$el.fadeIn('fast')
       return
 
     $appEl.append (new CreateUserView(user)).render().$el
