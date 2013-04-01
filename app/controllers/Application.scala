@@ -92,6 +92,7 @@ object Application extends Controller {
    */
   def jamSession = WebSocket.using[String] { request =>
     val in = Iteratee.foreach[String] { msg =>
+      Logger.info(s"""Received message $msg""")
       msg match {
         case str if str.startsWith("playNote:") =>
           val (pId, freq) = {
@@ -100,6 +101,19 @@ object Application extends Controller {
           }
 
           AudioPlayer.play(pId, freq)
+
+        case _str if _str.startsWith("changeParam:") =>
+          // TODO Refactor this
+          val (pId, param, newVal) = {
+            val sp = _str.split(":")
+            (sp(1), sp(2), sp(3).toDouble)
+          }
+          Logger.info(s"""
+            pId: $pId
+            param: $param
+            newVal: $newVal
+          """)
+          AudioPlayer.updateVoice(pId, param, newVal)
       }
     } mapDone { _ =>
       AudioPlayer.removePlayer(request.session("playerId"))

@@ -148,6 +148,26 @@ object AudioPlayer {
   }
 
   /**
+   * Modifies a current player's voice's parameters.
+   * Note that all validation for the parameter name and value should be performed prior to
+   * invoking this method.
+   *
+   * @param pId The player whos voice is to be modified.
+   * @param paramName The name of the parameter to modify.
+   * @param newVal The new value of the parameter.
+   */
+  def updateVoice(pId: String, paramName: String, newVal: Double) {
+    val voice = getPlayerVoice(pId)
+
+    if (voice == null) { // TODO change this logging message
+      Logger.warn(s"""Notice: No player Id $pId for updateVoice""")
+    } else {
+      Logger.debug(s"""Setting $paramName to $newVal""")
+      voice.setPort(paramName, newVal, synth.createTimeStamp)
+    }
+  }
+
+  /**
    * Shutdown the System.
    */
   def shutdown() {
