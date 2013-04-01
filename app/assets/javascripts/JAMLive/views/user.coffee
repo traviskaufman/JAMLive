@@ -50,10 +50,10 @@ define [
       name = $target.attr 'name'
       value = $target.attr 'placeholder'
 
-      if $target.value.length > 0
-        value = $target.value
+      if $target.val().length > 0
+        value = $target.val()
 
-      @model.get('instrument').set name, value
+      @model.get('instrument').set name, parseFloat(value, 10)
 
 
 
