@@ -13,6 +13,8 @@ import com.jsyn.instruments.WaveShapingVoice
 import com.jsyn.unitgen.LineOut
 import com.jsyn.unitgen.UnitVoice
 
+import models.audio.JsynExtensions._
+
 /**
  * Responsible for handling all triggering and playback of audio
  * requested by messages received by the server.
@@ -134,7 +136,7 @@ object AudioPlayer {
       return
     }
 
-    val amplitude = 1.toDouble / (if (playerCount > 0) playerCount else 1)
+    val amplitude = voice.getUnitGenerator.getParamValue("amplitude").get
 
     // Play for 500 ms a tone of 250Hz at amplitude 0.4
     voice.noteOn(

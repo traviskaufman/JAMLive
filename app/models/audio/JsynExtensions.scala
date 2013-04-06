@@ -4,6 +4,7 @@
 package models.audio
 
 import scala.collection.JavaConversions._
+import java.lang.ArrayIndexOutOfBoundsException
 import com.jsyn.unitgen.UnitGenerator
 import com.jsyn.ports.UnitInputPort
 
@@ -42,5 +43,27 @@ package object JsynExtensions {
           "min" -> p.getMinimum
       ))
     )
+
+    /**
+     * Retrieve a value of a (input) parameter without jumping through tons of method hoops and/or
+     * throwing exceptions.
+     *
+     * @param pName The name of the parameter to get.
+     * @param partNum (optional) The port number to get. Useful for multi-input ports.
+     *    Defaults to 0.
+     *
+     * @return An option containing the value of the port if it exists.
+     */
+    def getParamValue(pName: String, partNum: Integer = 0): Option[Double] = {
+      ug.getPortByName(pName) match {
+        case null => None
+        case p =>
+          try {
+            Some[Double](p.asInstanceOf[UnitInputPort].get(partNum))
+          } catch {
+            case _: ArrayIndexOutOfBoundsException => None
+          }
+      }
+    }
   }
 }
