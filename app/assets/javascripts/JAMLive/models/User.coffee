@@ -130,7 +130,7 @@ define [
     _onInstrumentChange: (model) =>
       _.forEach model.changedAttributes(), (val, attr) ->
         console.log "Change to #{attr} of #{val}"
-        this._wsMsg "changeParam:#{@playerId}:{attr}:{val}"
+        @_wsMsg "changeParam:#{@get 'playerId'}:#{attr}:#{val}"
         return
       , @
 

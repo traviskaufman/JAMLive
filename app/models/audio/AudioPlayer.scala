@@ -164,7 +164,6 @@ object AudioPlayer {
     if (voice == null) { // TODO change this logging message
       Logger.warn(s"""Notice: No player Id $pId for updateVoice""")
     } else {
-      Logger.debug(s"""Setting $paramName to $newVal""")
       voice.setPort(paramName, newVal, synth.createTimeStamp)
     }
   }

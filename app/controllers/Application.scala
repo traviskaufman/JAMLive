@@ -108,11 +108,6 @@ object Application extends Controller {
             val sp = _str.split(":")
             (sp(1), sp(2), sp(3).toDouble)
           }
-          Logger.info(s"""
-            pId: $pId
-            param: $param
-            newVal: $newVal
-          """)
           AudioPlayer.updateVoice(pId, param, newVal)
       }
     } mapDone { _ =>
