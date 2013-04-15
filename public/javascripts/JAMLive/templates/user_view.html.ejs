@@ -12,14 +12,20 @@
   <div class="sound-key" data-frequency="1760">A6</div>
 </div>
 <div class="instrument-container container">
-  <% _.forEach(instrument.attributes, function(param, name) { %>
-    <div class="instrument container">
-      <p class="param-name"><%= name %></p>
-      <input type="text"
-             class="p-input"
-             name="<%- name %>"
-             placeholder="<%- param.default %>"
-      />
-    </div>
+  <% _.each(instrument.attributes, function(paramVal, name) { %>
+    <% if (name !== "paramsInfo" && name !== "Frequency") { %>
+      <div class="instrument container">
+        <p class="param-name"><%= name %></p>
+        <input type="text"
+               class="p-input"
+               name="<%- name %>"
+               <% if (instrument.attributes.paramsInfo[name]) { %>
+                 data-max="<%- instrument.attributes.paramsInfo[name].max %>"
+                 data-min="<%- instrument.attributes.paramsInfo[name].min %>"
+               <% } %>
+               placeholder="<%- paramVal %>"
+        />
+      </div>
+    <% } %>
   <% }); %>
 </div>
