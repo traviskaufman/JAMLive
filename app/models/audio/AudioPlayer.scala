@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 import play.api.Logger
 
 import com.jsyn._
-import com.jsyn.instruments.WaveShapingVoice
+import com.jsyn.instruments._
 import com.jsyn.unitgen.LineOut
 import com.jsyn.unitgen.UnitVoice
 
@@ -74,7 +74,7 @@ object AudioPlayer {
       return null
     }
 
-    val playerVoice = new WaveShapingVoice
+    val playerVoice = new SubtractiveSynthVoice
     connectToOutput(playerVoice)
     synth.add(playerVoice)
     players += (playerId -> playerVoice)
@@ -136,7 +136,7 @@ object AudioPlayer {
       return
     }
 
-    val amplitude = voice.getUnitGenerator.getParamValue("amplitude").get
+    val amplitude = voice.getUnitGenerator.getParamValue("amplitude").getOrElse(0.5)
 
     // Play for 500 ms a tone of 250Hz at amplitude 0.4
     voice.noteOn(
