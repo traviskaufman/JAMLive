@@ -55,6 +55,4 @@ define [
 
       @model.get('instrument').set name, parseFloat(value, 10)
 
-
-
   UserView

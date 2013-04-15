@@ -19,9 +19,9 @@ package object JsynExtensions {
   implicit class UnitGeneratorExtensions(ug: UnitGenerator) {
     /**
      * Outputs an Iterable object containing a series of maps, each of which contains information
-     * about an input port of the unitGenerator. Namely, the map will contain the following keys:
+     * about an input port of the unitGenerator. Namely, the map will contain keys, each of which
+     * corresponds to a parameter name, and a map of values as follows:
      * <ul>
-     *   <li><strong>name</strong>: The name of the input port.
      *   <li><strong>default</strong>: The port's default value.
      *   <li><strong>max</strong>: The maximum value that the port can have.
      *   <li><strong>min</strong>: The minimum value that the port can have.
