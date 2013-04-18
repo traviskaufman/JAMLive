@@ -1,5 +1,9 @@
-.ui-slider .ui-slider-range {
-        position: absolute; z-index: 1; font-size: .7em; display: block; border: 0; background-position: 0 0;
+.ui-slider {
+        z-index: 1;
+        font-size: .7em;
+        display: block;
+        border: 0;
+        background-position: 0 0;
         color: #ffffff;
         background-color: #0064cd;
         background-repeat: repeat-x;
@@ -49,5 +53,4 @@
         -o-transition: 0.1s linear background-image;
         transition: 0.1s linear background-image;
         overflow: visible;
-
     }

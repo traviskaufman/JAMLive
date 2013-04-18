@@ -31,6 +31,7 @@ define [
           max: val.max
 
         mem
+      , {}
 
       _.each response, (val, key, resp) ->
         resp[key] = val.default
