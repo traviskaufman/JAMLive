@@ -3,12 +3,14 @@ define [
   'lodash',
   'backbone',
   'models/user',
-  'text!templates/user_view.html.ejs'
+  'text!templates/user_view.html.ejs',
+  'jqueryui'
 ], ($, _, Backbone, User, UserViewTemplate) ->
 
   ###
   # This view handles displaying info about the user once a user is
   # instantiated.
+  # @todo changeParam() user model method and refactor this code to use.
   ###
   class UserView extends Backbone.View
     className: 'container user-stage'
@@ -18,7 +20,6 @@ define [
     events:
       "mousedown .sound-key": "_onSoundKeyMouseDown"
       "touchstart .sound-key": "_onSoundKeyMouseDown"  # same deal as mousedown
-      "blur .p-input": "_onParamBlur"
 
     ###
     # @constructor
@@ -28,7 +29,23 @@ define [
 
     render: =>
       markup = @template @model.toJSON()
+      _onSlideStop = @_onSlideStop
+
       @$el.html markup
+      @$('.p-input').each ->
+        $this = $(this)
+        opts = {}
+        data = $this.data()
+
+        if data.max? then opts.max = data.max
+        if data.min? then opts.min = data.min
+        opts.step = if data.max? and data.min? then \
+          (data.max - data.min) * 0.01 else 0.01
+        opts.stop = _onSlideStop
+        opts.value = data.default
+
+        $this.slider opts
+
       @
 
     ###
@@ -45,14 +62,8 @@ define [
     # Update the param when the user is done setting the value.
     # @param {Object<jQuery.Event>} evt Event object passed to handler.
     ###
-    _onParamBlur: (evt) =>
-      $target = $ evt.currentTarget
-      name = $target.attr 'name'
-      value = $target.attr 'placeholder'
-
-      if $target.val().length > 0
-        value = $target.val()
-
-      @model.get('instrument').set name, parseFloat(value, 10)
+    _onSlideStop: (evt, ui) =>
+      @model.get('instrument').set $(ui.handle.parentElement).data('name'),
+                                   ui.value
 
   UserView

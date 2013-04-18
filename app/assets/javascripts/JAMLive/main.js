@@ -3,12 +3,14 @@ require.config({
     jquery: 'lib/jquery-1.9.1.min',
     lodash: 'lib/lodash.min',
     backbone: 'lib/backbone-min',
-    text: 'lib/text'
+    text: 'lib/text',
+    jqueryui: 'lib/jquery-ui-1.9.2.custom.min'
   },
   shim: {
     jquery: {
       exports: '$'
     },
+    jqueryui: ['jquery'],
     lodash: {
       exports: '_'
     },

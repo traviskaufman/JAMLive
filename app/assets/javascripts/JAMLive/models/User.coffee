@@ -6,6 +6,7 @@ define [
   ###
   # Holds information about the current user who's
   # logged in and jamming.
+  # @todo refactor out instrument stuff.
   ###
   class User extends Backbone.Model
     ###

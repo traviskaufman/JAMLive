@@ -15,21 +15,14 @@
   <% _.each(instrument.attributes, function(paramVal, name) { %>
     <% if (name !== "paramsInfo" && name !== "Frequency") { %>
       <div class="instrument container">
-        <p class="param-name">
-          <%= name %>
-          <% if (instrument.attributes.paramsInfo[name]) { %>
-            (<%= instrument.attributes.paramsInfo[name].max %> - <%= instrument.attributes.paramsInfo[name].min %>)
-          <% } %>
-        </p>
-        <input type="text"
-               class="p-input"
-               name="<%- name %>"
-               <% if (instrument.attributes.paramsInfo[name]) { %>
-                 data-max="<%- instrument.attributes.paramsInfo[name].max %>"
-                 data-min="<%- instrument.attributes.paramsInfo[name].min %>"
-               <% } %>
-               placeholder="<%- paramVal %>"
-        />
+        <div class="p-input"
+             data-name="<%= name %>"
+             data-default="<%= paramVal %>"
+             <% if (instrument.attributes.paramsInfo[name]) { %>
+                data-max="<%= instrument.attributes.paramsInfo[name].max %>"
+                data-min="<%= instrument.attributes.paramsInfo[name].min %>"
+             <% } %>
+        ><%- name %></div>
       </div>
     <% } %>
   <% }); %>
