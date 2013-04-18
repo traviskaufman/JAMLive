@@ -14,8 +14,9 @@
 <div class="instrument-container container">
   <% _.each(instrument.attributes, function(paramVal, name) { %>
     <% if (name !== "paramsInfo" && name !== "Frequency") { %>
-      <div class="instrument container">
-        <div class="p-input"
+      <div class="parameter-container row-fluid">
+        <span class="p-name span1"><%- name %></span>
+        <div class="p-input span9"
              data-name="<%= name %>"
              data-default="<%= paramVal %>"
              <% if (instrument.attributes.paramsInfo[name]) { %>
@@ -23,7 +24,6 @@
                 data-min="<%= instrument.attributes.paramsInfo[name].min %>"
              <% } %>
         ></div>
-        <%- name %>
       </div>
     <% } %>
   <% }); %>
