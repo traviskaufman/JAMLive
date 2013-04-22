@@ -29,8 +29,7 @@ object AudioPlayer {
   implicit val lineOut: LineOut = new LineOut
   var playerCount: Int = 0
 
-  private val players: ConcurrentMap[String,
-                          UnitVoice] = new ConcurrentHashMap[String, UnitVoice]
+  private val players: ConcurrentMap[String, UnitVoice] = new ConcurrentHashMap[String, UnitVoice]
 
   /**
    * Initializes the Audio Player.
@@ -147,6 +146,39 @@ object AudioPlayer {
     voice.noteOff(
       synth.createTimeStamp.makeRelative(0.5)
     )
+  }
+
+  /**
+   * Changes the voice of a current player to a new voice.
+   *
+   * @param pId The player whos voice is to be changed.
+   * @param vName The name of the new voice. Should correspond to
+   * the name of the instrument as it is presented in JSynInstrumentLibrary.
+   * If the correct voice isn't found it will default to a substractive synth voice.
+   *
+   * @return The parameters of the new voice.
+   */
+  def changeVoice(pId: String, vName: String): Map[String, Map[String, Double]] = {
+    val oldVoice = getPlayerVoice(pId)
+
+    if (oldVoice == null) {
+      return null
+    }
+
+    oldVoice.noteOff(synth.createTimeStamp)
+
+    val newVoice: UnitVoice = match vName {
+      // Is there a better way to do this with scala.reflect?
+      case "WaveShaping" => new WaveShapingVoice
+      case "DrumWoodFM" => new DrumWoodFM
+      case "NoiseHit" => new NoiseHit
+      case "SubtractiveSynth" => new SubtractiveSynthVoice
+      case _ => new SubtractiveSynthVoice
+    }
+
+    players.put(pId, newVoice)
+
+    newVoice.getUnitGenerator.inputPortsToMap
   }
 
   /**
