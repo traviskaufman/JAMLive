@@ -1,3 +1,4 @@
+# @todo: Update on mousemove for slider and Class.forName
 define [
   'jquery',
   'lodash',
@@ -29,7 +30,7 @@ define [
 
     render: =>
       markup = @template @model.toJSON()
-      _onSlideStop = @_onSlideStop
+      _onSlideChange = @_onSlideChange
 
       @$el.html markup
       @$('.p-input').each ->
@@ -39,9 +40,8 @@ define [
 
         if data.max? then opts.max = data.max
         if data.min? then opts.min = data.min
-        opts.step = if data.max? and data.min? then \
-          (data.max - data.min) * 0.01 else 0.01
-        opts.stop = _onSlideStop
+        opts.step = 0.001
+        opts.slide = _onSlideChange
         opts.value = data.default
 
         $this.slider opts
@@ -62,7 +62,7 @@ define [
     # Update the param when the user is done setting the value.
     # @param {Object<jQuery.Event>} evt Event object passed to handler.
     ###
-    _onSlideStop: (evt, ui) =>
+    _onSlideChange: (evt, ui) =>
       @model.get('instrument').set $(ui.handle.parentElement).data('name'),
                                    ui.value
 
