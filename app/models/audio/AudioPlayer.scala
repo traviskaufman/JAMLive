@@ -144,7 +144,7 @@ object AudioPlayer {
       synth.createTimeStamp
     )
     voice.noteOff(
-      synth.createTimeStamp.makeRelative(0.5)
+      synth.createTimeStamp.makeRelative(3)
     )
   }
 
@@ -167,7 +167,7 @@ object AudioPlayer {
 
     oldVoice.noteOff(synth.createTimeStamp)
 
-    val newVoice: UnitVoice = match vName {
+    val newVoice: UnitVoice = vName match {
       // Is there a better way to do this with scala.reflect?
       case "WaveShaping" => new WaveShapingVoice
       case "DrumWoodFM" => new DrumWoodFM

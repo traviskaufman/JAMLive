@@ -10,7 +10,6 @@ define [
     ###
     # We make sure that that an updated param value falls within the maximum
     # and minimum allowed values for the given param.
-    # @todo validate for min / max
     ###
     validate: (attributes, options) =>
       _.forEach attributes, (val, attr) ->

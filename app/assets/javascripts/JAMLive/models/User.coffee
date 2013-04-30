@@ -6,7 +6,6 @@ define [
   ###
   # Holds information about the current user who's
   # logged in and jamming.
-  # @todo refactor out instrument stuff.
   ###
   class User extends Backbone.Model
     ###
@@ -66,6 +65,18 @@ define [
       return
 
     ###
+    # Change the instrument.
+    # @param instName {String} The name of the instrument.
+    ###
+    changeInstrument: (instName) ->
+      _this = @
+
+      $.getJSON '/changeInstrument',
+        pId: @get 'playerId'
+        inst: instName
+      , _this._onInstrumentChange
+
+    ###
     # Sends a message to the server via a websocket.
     # @param {String} msg Message to send to the server.
     # @private
@@ -121,18 +132,29 @@ define [
     ###
     _onInstrumentSync: (model) =>
       console.log model.toJSON()
-      @listenTo @get('instrument'), 'change', @_onInstrumentChange
+      @listenTo @get('instrument'), 'change', @_onInstrumentInit
       return
 
     ###
     # Called after instrument is synced so it will stay updated on the server
     # with the client.
     ###
-    _onInstrumentChange: (model) =>
+    _onInstrumentInit: (model) =>
       _.forEach model.changedAttributes(), (val, attr) ->
         console.log "Change to #{attr} of #{val}"
         @_wsMsg "changeParam:#{@get 'playerId'}:#{attr}:#{val}"
         return
       , @
+
+    ###
+    # Called when an instrument is changed via changeInstrument after it is
+    # initialized.
+    ###
+    _onInstrumentChange: (data, txt, jqXhr) =>
+      if data is null
+        console.warn "Bad instrument data: ", jqXhr.url
+      else
+        @get('instrument').change()
+      return
 
   User

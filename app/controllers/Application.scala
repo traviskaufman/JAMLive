@@ -85,27 +85,36 @@ object Application extends Controller {
   }
 
   /**
+   * Switch to a different instrument.
+   */
+  def changeInstrument = Action { request =>
+    val pId = request.getQueryString("pId")
+    val newInst = request.getQueryString("inst")
+
+    Ok(Json.toJson(AudioPlayer.changeVoice(pId.get, newInst.get)))
+  }
+
+  /**
    * Establishes the websocket connection for sending
    * musical control messages to the server.
    *
-   * @todo Implement with WAMP.
    */
   def jamSession = WebSocket.using[String] { request =>
     val in = Iteratee.foreach[String] { msg =>
       Logger.info(s"""Received message $msg""")
       msg match {
-        case str if str.startsWith("playNote:") =>
+        case pn_str if pn_str.startsWith("playNote:") =>
           val (pId, freq) = {
-            val sp = str.split(":")
+            val sp = pn_str.split(":")
             (sp(1), sp(2).toInt)
           }
 
           AudioPlayer.play(pId, freq)
 
-        case _str if _str.startsWith("changeParam:") =>
+        case cp_str if cp_str.startsWith("changeParam:") =>
           // TODO Refactor this
           val (pId, param, newVal) = {
-            val sp = _str.split(":")
+            val sp = cp_str.split(":")
             (sp(1), sp(2), sp(3).toDouble)
           }
           AudioPlayer.updateVoice(pId, param, newVal)
